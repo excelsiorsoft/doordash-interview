@@ -70,4 +70,9 @@ class PhoneService (private val recordRepository: RecordRepository){
         //currentRecord.phoneNumber = currentRecord.phoneNumber.replace("-","")
         return currentRecord
     }
+
+    /*fun parseInput(input: String): List<Record> {
+
+        return listOf(Record (1, "415-415-4159", "home",0))
+    }*/
 }

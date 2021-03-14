@@ -8,14 +8,17 @@ import org.springframework.data.domain.ExampleMatcher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
+
 
 @Service
 class PhoneService (private val recordRepository: RecordRepository){
 
-
+    @Transactional(readOnly=true)
     fun findById(recordId: Long): Optional<Record> = recordRepository.findById(recordId)
 
+    @Transactional
     fun upsertRecord(record: Record): Record {
 
         val matcher = ExampleMatcher.matching()
@@ -41,12 +44,12 @@ class PhoneService (private val recordRepository: RecordRepository){
         return result
     }
 
-    fun addRecord(record: Record): Record {
+    private fun addRecord(record: Record): Record {
          return recordRepository.save(record.apply { numOfOccurences =1 })
     }
 
 
-    fun updateRecord(recordId: Long): Record {
+    private fun updateRecord(recordId: Long): Record {
         var currentRecord: Record = recordRepository.findById(recordId).get()
         currentRecord.numOfOccurences += 1
         currentRecord = recordRepository.save(currentRecord)

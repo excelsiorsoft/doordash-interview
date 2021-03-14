@@ -1,0 +1,16 @@
+micronaut:
+  application:
+    name: phone_number_parser
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/phone_number_db
+    driverClassName: org.postgresql.Driver
+    username: root
+    password: password
+flyway:
+  datasources:
+    default:
+      enabled: true
+endpoints:
+  flyway:
+    sensitive: false

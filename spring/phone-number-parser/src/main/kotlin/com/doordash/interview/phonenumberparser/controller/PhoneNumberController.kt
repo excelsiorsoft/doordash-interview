@@ -1,8 +1,11 @@
 package com.doordash.interview.phonenumberparser.controller
 
 import com.doordash.interview.phonenumberparser.model.Record
+import com.doordash.interview.phonenumberparser.model.toCommandView
+import com.doordash.interview.phonenumberparser.model.toQueryView
 import com.doordash.interview.phonenumberparser.service.PhoneService
-import org.springframework.http.HttpStatus
+import com.doordash.interview.phonenumberparser.view.CommandView
+import com.doordash.interview.phonenumberparser.view.QueryView
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -14,11 +17,20 @@ class PhoneNumberController (private val phoneService: PhoneService){
     fun ping(): String = "hello"
 
     @GetMapping("/phone-numbers/{id}")
-    fun findById(@PathVariable("id") recordId: Long): ResponseEntity<Record> =
+    fun findById(@PathVariable("id") recordId: Long): ResponseEntity<QueryView> =
             phoneService.findById(recordId)
+                    .map { record -> ResponseEntity.ok(record.toQueryView())}
+                    .orElse(ResponseEntity.notFound().build())
 
     @PostMapping("/phone-numbers")
-    fun processRecord(@Valid @RequestBody record: Record): ResponseEntity<Record> =
-            phoneService.upsertRecord(record)
+    fun processData(@Valid @RequestBody record: Record): ResponseEntity<List<CommandView>> {
+        //1. parse input into a list of records
+        val records: List<Record> = listOf(record);
+
+        //2. for each record in the list
+        val processedRecords:List<Record> = records.map{record -> phoneService.upsertRecord(record)}
+        //3. build a response entity around the processed list and return
+        return ResponseEntity.ok(processedRecords.map { record -> record.toCommandView() })
+    }
 
 }

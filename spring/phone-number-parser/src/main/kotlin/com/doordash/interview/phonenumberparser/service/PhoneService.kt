@@ -5,6 +5,7 @@ import com.doordash.interview.phonenumberparser.repository.RecordRepository
 import org.springframework.data.domain.Example
 
 import org.springframework.data.domain.ExampleMatcher
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.util.*
@@ -12,14 +13,15 @@ import java.util.*
 @Service
 class PhoneService (private val recordRepository: RecordRepository){
 
-    fun findById(recordId: Long): ResponseEntity<Record> =
+    /*fun findById(recordId: Long): ResponseEntity<Record> =
             recordRepository.findById(recordId).map { record ->
-                /*record.apply {  phoneNumber = phoneNumber.replace("-","") }*/
+                *//*record.apply {  phoneNumber = phoneNumber.replace("-","") }*//*
                 ResponseEntity.ok(record)
-            }.orElse(ResponseEntity.notFound().build())
+            }.orElse(ResponseEntity.notFound().build())*/
 
+    fun findById(recordId: Long): Optional<Record> = recordRepository.findById(recordId)
 
-    fun upsertRecord(record: Record): ResponseEntity<Record> {
+    fun upsertRecord(record: Record): Record {
 
         val matcher = ExampleMatcher.matching()
                 .withMatcher("phoneNumber", ExampleMatcher.GenericPropertyMatcher().exact())
@@ -33,9 +35,7 @@ class PhoneService (private val recordRepository: RecordRepository){
                 numOfOccurences = 0
         )
 
-
-
-        val result : ResponseEntity<Record>
+        val result : Record
 
         val existing: Optional<Record> = recordRepository.findOne(Example.of(sample, matcher))
         if (existing.isPresent) {
@@ -46,21 +46,28 @@ class PhoneService (private val recordRepository: RecordRepository){
         return result
     }
 
-    fun addRecord(record: Record): ResponseEntity<Record> {
-        val saved = recordRepository.save(record.apply { numOfOccurences =1 })
-                .apply {
+    fun addRecord(record: Record): Record {
+         return recordRepository.save(record.apply { numOfOccurences =1 })
+                /*.apply {
                     phoneNumber = phoneNumber.replace("-","")
-                }
-        return ResponseEntity.ok(saved)
+                }*/
+
     }
 
 
-    fun updateRecord(recordId: Long): ResponseEntity<Record> =
+    /*fun updateRecord(recordId: Long): *//*ResponseEntity<*//*Optional<Record>*//*>*//* =
             recordRepository.findById(recordId).map { currentRecord -> currentRecord.apply{
                 numOfOccurences +=1
-               /* phoneNumber = phoneNumber.replace("-","")*/
+               *//* phoneNumber = phoneNumber.replace("-","")*//*
             }
-                ResponseEntity.ok().body(recordRepository.save(currentRecord))
-            }.orElse(ResponseEntity.notFound().build())
+                *//*ResponseEntity.ok().body(*//*recordRepository.save(currentRecord)*//*)*//*
+            }*//*.orElse(ResponseEntity.notFound().build())*/
 
+    fun updateRecord(recordId: Long): Record {
+        var currentRecord: Record = recordRepository.findById(recordId).get()
+        currentRecord.numOfOccurences += 1
+        currentRecord = recordRepository.save(currentRecord)
+        //currentRecord.phoneNumber = currentRecord.phoneNumber.replace("-","")
+        return currentRecord
+    }
 }

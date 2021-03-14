@@ -1,5 +1,7 @@
 package com.doordash.interview.phonenumberparser.model
 
+import com.doordash.interview.phonenumberparser.view.CommandView
+import com.doordash.interview.phonenumberparser.view.QueryView
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 
@@ -20,4 +22,20 @@ data class Record(
 
         @Column(name="occurrences")
         var numOfOccurences : Int
+
+
 )
+
+fun Record.toCommandView() = CommandView(
+        id = id,
+        phone_number = phoneNumber.replace("-",""),
+        phone_type = phoneType
+)
+
+fun Record.toQueryView() = QueryView(
+        id = id,
+        phone_number = phoneNumber,
+        phone_type = phoneType,
+        occurrences = numOfOccurences
+)
+

@@ -71,8 +71,5 @@ class PhoneService (private val recordRepository: RecordRepository){
         return currentRecord
     }
 
-    /*fun parseInput(input: String): List<Record> {
 
-        return listOf(Record (1, "415-415-4159", "home",0))
-    }*/
 }

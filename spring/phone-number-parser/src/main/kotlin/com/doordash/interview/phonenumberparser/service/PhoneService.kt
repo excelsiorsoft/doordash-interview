@@ -38,9 +38,7 @@ class PhoneService (private val recordRepository: RecordRepository){
         val result : ResponseEntity<Record>
 
         val existing: Optional<Record> = recordRepository.findOne(Example.of(sample, matcher))
-        if (/*recordRepository.existsById(record.id)*/
-                /*recordRepository.exists(Example.of(sample, matcher))*/
-                existing.isPresent) {
+        if (existing.isPresent) {
             result=updateRecord(existing.get().id)
         } else {
             result=addRecord(record)

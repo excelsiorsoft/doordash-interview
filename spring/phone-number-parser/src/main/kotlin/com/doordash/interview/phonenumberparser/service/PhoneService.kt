@@ -13,11 +13,6 @@ import java.util.*
 @Service
 class PhoneService (private val recordRepository: RecordRepository){
 
-    /*fun findById(recordId: Long): ResponseEntity<Record> =
-            recordRepository.findById(recordId).map { record ->
-                *//*record.apply {  phoneNumber = phoneNumber.replace("-","") }*//*
-                ResponseEntity.ok(record)
-            }.orElse(ResponseEntity.notFound().build())*/
 
     fun findById(recordId: Long): Optional<Record> = recordRepository.findById(recordId)
 
@@ -48,26 +43,13 @@ class PhoneService (private val recordRepository: RecordRepository){
 
     fun addRecord(record: Record): Record {
          return recordRepository.save(record.apply { numOfOccurences =1 })
-                /*.apply {
-                    phoneNumber = phoneNumber.replace("-","")
-                }*/
-
     }
 
-
-    /*fun updateRecord(recordId: Long): *//*ResponseEntity<*//*Optional<Record>*//*>*//* =
-            recordRepository.findById(recordId).map { currentRecord -> currentRecord.apply{
-                numOfOccurences +=1
-               *//* phoneNumber = phoneNumber.replace("-","")*//*
-            }
-                *//*ResponseEntity.ok().body(*//*recordRepository.save(currentRecord)*//*)*//*
-            }*//*.orElse(ResponseEntity.notFound().build())*/
 
     fun updateRecord(recordId: Long): Record {
         var currentRecord: Record = recordRepository.findById(recordId).get()
         currentRecord.numOfOccurences += 1
         currentRecord = recordRepository.save(currentRecord)
-        //currentRecord.phoneNumber = currentRecord.phoneNumber.replace("-","")
         return currentRecord
     }
 

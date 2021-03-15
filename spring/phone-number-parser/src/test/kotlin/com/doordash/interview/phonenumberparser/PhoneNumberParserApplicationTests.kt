@@ -12,6 +12,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.http.*
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.time.Duration
 
 
 @ExtendWith(SpringExtension::class)
@@ -55,6 +56,40 @@ class PhoneNumberParserApplicationTests() {
 		assertThat(responseEntityStr.body).contains("4154154155")
 		assertThat(responseEntityStr.body).contains("4155145145")
 	}
+
+
+	@Test
+	fun `Ensuring acceptable SLA on the writing endpoints`() {
+
+		val objectMapper = ObjectMapper()
+
+		val upsertUrl = "/phone-numbers"
+		val headers = HttpHeaders()
+		headers.setContentType(MediaType.APPLICATION_JSON)
+		val rawInput = JSONObject().apply { put("raw_phone_numbers", "(Home) 415-415-4155 (Cell) 415-514-5145") }
+
+		val request: HttpEntity<String> = HttpEntity<String>(rawInput.toString(), headers)
+		val responseEntityStr: ResponseEntity<String> = restTemplate.postForEntity<String>(upsertUrl, request, String::class.java)
+
+
+		for (i in 1..100) {
+			val start = System.nanoTime()
+			val root: JsonNode = objectMapper.readTree(responseEntityStr.body)
+			val durationNanos = System.nanoTime() - start
+			val durationMillies =Math.max(0L, Math.round(durationNanos / 1000000.0))
+			println("duration $i: $durationMillies ms => $root")
+			assertThat(durationMillies).isLessThan(100)
+			//println(root)
+		}
+
+
+/*
+		assertThat(root).isNotEmpty
+		assertThat(responseEntityStr.statusCode).isEqualTo(HttpStatus.OK)
+		assertThat(responseEntityStr.body).contains("4154154155")
+		assertThat(responseEntityStr.body).contains("4155145145")*/
+	}
+
 
 
 }

@@ -79,15 +79,8 @@ class PhoneNumberParserApplicationTests() {
 			val durationMillies =Math.max(0L, Math.round(durationNanos / 1000000.0))
 			println("duration $i: $durationMillies ms => $root")
 			assertThat(durationMillies).isLessThan(100)
-			//println(root)
+
 		}
-
-
-/*
-		assertThat(root).isNotEmpty
-		assertThat(responseEntityStr.statusCode).isEqualTo(HttpStatus.OK)
-		assertThat(responseEntityStr.body).contains("4154154155")
-		assertThat(responseEntityStr.body).contains("4155145145")*/
 	}
 
 

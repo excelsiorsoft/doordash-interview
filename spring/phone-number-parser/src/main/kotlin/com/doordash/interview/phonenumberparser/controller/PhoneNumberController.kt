@@ -35,8 +35,4 @@ class PhoneNumberController (private val phoneService: PhoneService){
         return ResponseEntity.ok(Output(commandViewRecords))
     }
 
-    fun List<Record>.toOutput(){
-
-    }
-
 }

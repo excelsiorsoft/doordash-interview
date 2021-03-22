@@ -1,0 +1,16 @@
+show columns from interview.record1;
+drop table interview.record;
+create table interview.record (ID BIGINT(19) NOT NULL PRIMARY KEY, PHONE_NUMBER VARCHAR(255), PHONE_TYPE VARCHAR(255), OCCURRENCES INTEGER(10));
+
+select * from interview.record;
+
+show columns from interview.record;
+
+insert into interview.record (ID, PHONE_NUMBER, PHONE_TYPE, OCCURRENCES) values (100, '415-415-4155', 'home', 1);
+insert into interview.record (ID, PHONE_NUMBER, PHONE_TYPE, OCCURRENCES)  values (110, '415-123-4567', 'cell', 1);
+
+show columns from interview.record;
+
+
+netstat -a -o –n
+taskkill /F /PID 15508
